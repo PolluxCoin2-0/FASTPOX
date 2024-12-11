@@ -111,9 +111,9 @@ const StakeUnstakePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black px-2 md:px-4 py-7">
-      <div className="bg-gradient-to-b from-[rgba(43,37,90,0.34)] to-[rgba(200,200,200,0.09)] rounded-xl border-gray-400 border-[1px] border-opacity-30 p-4 my-4 w-full overflow-x-auto">
+      <div className="bg-[#161717] rounded-xl border-gray-400 border-[1px] border-opacity-30 p-4 my-4 w-full overflow-x-auto">
         {/* Header Section */}
-        <div className="bg-[#212D49] rounded-xl text-white flex flex-row items-center justify-between py-2 min-w-[850px] md:min-w-0">
+        <div className="bg-[#272727] rounded-xl text-white flex flex-row items-center justify-between py-2 min-w-[850px] md:min-w-0">
           <p className="font-bold px-8 py-2 w-[25%] text-left">Invest Date</p>
           <p className="font-bold px-8 py-2 w-[25%] text-center">Amount</p>
           <p className="font-bold px-4 py-2 w-[25%] text-center">
@@ -141,15 +141,17 @@ const StakeUnstakePage: React.FC = () => {
                   </p>
                   <div className="lg:w-[25%] px-4 flex justify-end">
                     {item.isLoading ? (
-                      <div className="w-full lg:w-[40%] rounded-xl flex justify-center bg-gradient-to-r from-[rgba(137,34,179,0.7)] via-[rgba(90,100,214,0.7)] to-[rgba(185,77,228,0.7)] ">
+                      <div className="w-full lg:w-[40%] rounded-xl flex justify-center bg-gradient-to-r from-yellow-300 to-yellow-500 ">
                         <Loader />
                       </div>
                     ) : (
                       <button
                       disabled={item.isUnstaked }
                         onClick={(e) => handleUnstakeFunc(e, index, item?._id, item?.mintCount)}
-                        className={`w-full lg:w-[40%] ${item.isUnstaked ? "bg-gradient-to-r from-[rgba(137,34,179,0.3)] via-[rgba(90,100,214,0.3)] to-[rgba(185,77,228,0.3)]" : "bg-gradient-to-r from-[rgba(137,34,179,0.7)] via-[rgba(90,100,214,0.7)] to-[rgba(185,77,228,0.7)]"} 
-         text-white text-lg font-semibold px-4 py-2 rounded-xl transform hover:scale-105 transition delay-300`}
+                        className={`w-full lg:w-[40%] ${item.isUnstaked
+                          ? "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"
+                          : "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"} 
+                          text-black text-lg font-semibold px-4 py-2 rounded-xl transform hover:scale-105 transition delay-300`}
                       >
                         Unstake
                       </button>

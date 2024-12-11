@@ -35,7 +35,7 @@ const MintedTransactions: React.FC = () => {
   return (
     <div className="bg-[#161717] rounded-xl border border-gray-400 border-opacity-30 p-4 w-full overflow-x-auto">
       {/* Table Header */}
-      <div className="bg-[#1C1C1C] rounded-xl text-white flex flex-row items-center justify-between py-2 min-w-[850px] md:min-w-0">
+      <div className="bg-[#272727] rounded-xl text-white flex flex-row items-center justify-between py-2 min-w-[850px] md:min-w-0">
         <p className="font-bold px-8 py-2 w-[50%] text-left">Transaction</p>
         <p className="font-bold px-4 py-2 w-[25%] text-center">Mint Time</p>
         <p className="font-bold px-8 py-2 w-[25%] text-right">Amount</p>
