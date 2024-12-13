@@ -93,7 +93,7 @@ const Login: React.FC = () => {
         <div className="text-center mb-6 md:mb-8">
           <Image
             src={Logo} // Replace with your logo path
-            alt="Sulmine Logo"
+            alt="Pox Logo"
             width={200} // Adjust logo width
             height={50} // Adjust logo height
             className="mx-auto"

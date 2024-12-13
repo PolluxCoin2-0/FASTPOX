@@ -6,9 +6,8 @@ import StakeImg from "@/assests/Stake.svg";
 import Mint from "@/assests/Mint.svg";
 import MintedTransactions from "./MintedTransactions";
 import ShimmerEffect from "@/app/components/ShimmerEffect";
-import {approvalApi, claimRewardAmountApi, claimRewardApi, 
-createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api, 
-getBalanceApi, getUserDetailsApi, mintUserApi, referralRewardApi, stakeSulBalanceApi, 
+import {claimRewardAmountApi, claimRewardApi, 
+createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getUserDetailsApi, mintUserApi, referralRewardApi, 
 updateStakeByIdWeb2Api, userAllStakesApi } from "@/api/apiFunctions";
 import { useSelector } from "react-redux";
 import { TransactionInterface, UserDetailsData } from "@/interface";
@@ -144,20 +143,7 @@ const DashBoard: React.FC = () => {
          toast.error("Insufficient Sul.");
          throw new Error("Insufficient Sul.");
        }
-       
-      // APPROVAL
-      const approvalRawData = await approvalApi(userStateData?.dataObject?.walletAddress as string, stakeAmount);
-      console.log("approvalRawData", approvalRawData);
-      if (!approvalRawData?.data?.transaction) {
-        toast.error("Approval Failed!");
-        throw new Error("Approval Failed!");
-      }
-
-      const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(approvalRawData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
-        toast.error("Transaction failed!");
-        throw new Error("Transaction failed!");
-      }
+       \
 
       const stakedData = await stakeSulBalanceApi(userStateData?.dataObject?.walletAddress as string, stakeAmount, userStateData?.dataObject?.referredBy as string);
       console.log({stakedData});

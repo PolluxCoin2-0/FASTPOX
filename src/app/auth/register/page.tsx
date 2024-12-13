@@ -9,12 +9,11 @@ import Link from "next/link";
 import { getPolinkweb } from "@/lib/connectWallet";
 import { toast } from "react-toastify";
 import {
-  approvalApi,
   checkUserExistedApi,
   createStakeTransactionWeb2Api,
-  getBalanceApi,
+  mainnetBalanceApi,
   registerApi,
-  stakeSulBalanceApi,
+  stakePoxBalanceApi,
 } from "@/api/apiFunctions";
 import { checkStakeBalance } from "@/lib/checkStakeBalance";
 import Loader from "@/app/components/Loader";
@@ -30,7 +29,7 @@ const RegistrationPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userWalletAddress, setUserWalletAddress] = useState<string>("");
   const [referralAddress, setReferralAddress] = useState<string>("");
-  const [sulAmount, setSulAmount] = useState<string>("");
+  const [poxAmount, setPoxAmount] = useState<string>("");
   const router = useRouter();
   const userStateData = useSelector((state: RootState)=>state?.wallet);
   const searchParams = useSearchParams(); // Get the search parameters from the URL
@@ -86,14 +85,14 @@ const RegistrationPage: React.FC = () => {
         return;
       }
 
-      if (!sulAmount || parseInt(sulAmount) <= 0) {
-        toast.error("SUL amount must be greater than 0.");
+      if (!poxAmount || parseInt(poxAmount) <= 0) {
+        toast.error("POX amount must be greater than 0.");
         setIsLoading(false);
         return;
       }
 
-      if(parseInt(sulAmount)<100){
-        toast.error("Sul amount should be greater than or equal to 100.");
+      if(parseInt(poxAmount)<1000){
+        toast.error("POX amount should be greater than or equal to 1000.");
         setIsLoading(false);
         return;
       }
@@ -117,7 +116,7 @@ const RegistrationPage: React.FC = () => {
       throw new Error("Invalid Referral Code!");
      }
 
-      //  CHECK USER HAVE 200 POX IS STAKED OR NOT
+      //  CHECK USER HAVE 1000 POX IS STAKED OR NOT
       const isStakeSufficient = await checkStakeBalance(userWalletAddress);
       if (isStakeSufficient) {
         toast.success("Stake amount is sufficient.");
@@ -127,38 +126,23 @@ const RegistrationPage: React.FC = () => {
         throw new Error("Stake amount is insufficient.");
       }
 
-      // USER MUST HAVE A MINIMUM SUL AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
-      const sulAmountOfUser = await getBalanceApi(userWalletAddress);
-      console.log("sulAmountOfUser", sulAmountOfUser);
-      if (sulAmountOfUser?.data === 0) {
-        toast.error(" Insufficient Sul.");
-        throw new Error("Insufficient Sul.");
+      // USER MUST HAVE A MINIMUM POX AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
+      const poxAmountOfUser = await mainnetBalanceApi(userWalletAddress);
+      console.log("poxAmountOfUser", poxAmountOfUser?.balance);
+      if (poxAmountOfUser?.balance/Math.pow(10,6) === 0) {
+        toast.error(" Insufficient Pox.");
+        throw new Error("Insufficient Pox.");
       }
 
-      if (sulAmountOfUser?.data < parseInt(sulAmount)) {
-        toast.error("Insufficient Sul.");
-        throw new Error("Insufficient Sul.");
+      if (poxAmountOfUser?.balance/Math.pow(10,6) < parseInt(poxAmount)) {
+        toast.error("Insufficient Pox.");
+        throw new Error("Insufficient Pox.");
       }
 
-      // APPROVAL
-      const approvalRawData = await approvalApi(userWalletAddress, sulAmount);
-      console.log("approvalRawData", approvalRawData);
-      if (!approvalRawData?.data?.transaction) {
-        toast.error("Approval Failed!");
-        throw new Error("Approval Failed!");
-      }
-
-        // SIGN TRANSACTION
-      const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(approvalRawData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
-        toast.error("Transaction failed!");
-        throw new Error("Transaction failed!");
-      }
-
-        // STAKE SUL AMOUNT
-        const stakeBalanceApiData = await stakeSulBalanceApi(
+        // STAKE POX AMOUNT
+        const stakeBalanceApiData = await stakePoxBalanceApi(
           userWalletAddress,
-          sulAmount,
+          poxAmount,
           referralAddress
         );
         console.log("stakeBalanceApiData", stakeBalanceApiData);
@@ -174,10 +158,10 @@ const RegistrationPage: React.FC = () => {
           throw new Error("Transaction failed!");
         }
 
-           // Call the API to register the user with the wallet address and referral address
-      const registerApiResponseData = await registerApi(
+      // Call the API to register the user with the wallet address and referral address
+        const registerApiResponseData = await registerApi(
         userWalletAddress,
-        sulAmount,
+        poxAmount,
         referralAddress
       );
       console.log("registerApiRepsponseData", registerApiResponseData);
@@ -201,7 +185,7 @@ const RegistrationPage: React.FC = () => {
         const web2CreateStakeApiData = await createStakeTransactionWeb2Api(
         userWalletAddress,
         stakedSignBroadcastTransactionStatusFuncRes?.txid,
-        parseInt(sulAmount),
+        parseInt(poxAmount),
         stakedSignBroadcastTransactionStatusFuncRes?.transactionStatus,
         registerApiResponseData?.data?.id);
 
@@ -218,7 +202,7 @@ const RegistrationPage: React.FC = () => {
       console.log("error", error);
     } finally {
       setUserWalletAddress("");
-      setSulAmount("");
+      setPoxAmount("");
       setReferralAddress("");
       setIsLoading(false);
     }
@@ -304,7 +288,7 @@ const RegistrationPage: React.FC = () => {
       {!isModalOpen && (
         <div className="bg-[#2e3030] backdrop-blur-lg border border-white/30 shadow-2xl rounded-3xl p-5 md:p-8 w-full max-w-md lg:max-w-lg xl:max-w-xl transform z-10">
           <h1 className="text-2xl md:text-3xl font-extrabold text-center text-white mb-4 md:mb-6 tracking-wide">
-            SULMINE REGISTRATION
+            FASTPOX REGISTRATION
           </h1>
           <form onSubmit={handleRegister} className="space-y-4 md:space-y-8">
             {/* Wallet Address Input */}
@@ -321,9 +305,9 @@ const RegistrationPage: React.FC = () => {
             {/* Amount Input */}
             <div className="relative group">
               <input
-                value={sulAmount}
+                value={poxAmount}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setSulAmount(e.target.value)
+                  setPoxAmount(e.target.value)
                 }
                 type="number"
                 inputMode="numeric"
@@ -331,7 +315,7 @@ const RegistrationPage: React.FC = () => {
                 className="w-full px-10 md:px-14 py-3 md:py-5 rounded-xl bg-white/10 text-white placeholder:text-white/70 focus:ring-1 focus:ring-white/40 focus:outline-none focus:shadow-lg transition duration-300 appearance-none"
               />
               <Image
-              alt="gray-sul-logo"
+              alt="gray-Pox-logo"
               src={LogoGray}
               width={0}
               height={0}
