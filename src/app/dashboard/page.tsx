@@ -6,9 +6,8 @@ import StakeImg from "@/assests/Stake.svg";
 import Mint from "@/assests/Mint.svg";
 import MintedTransactions from "./MintedTransactions";
 import ShimmerEffect from "@/app/components/ShimmerEffect";
-import {approvalApi, claimRewardAmountApi, claimRewardApi, 
-createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api, 
-getBalanceApi, getCappingAmountApi, getDirectBonusApi, getUserDetailsApi, mintUserApi, referralRewardApi, stakeSulBalanceApi, 
+import {claimRewardAmountApi, claimRewardApi, 
+createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getUserDetailsApi, mintUserApi, referralRewardApi, 
 updateStakeByIdWeb2Api, userAllStakesApi } from "@/api/apiFunctions";
 import { useSelector } from "react-redux";
 import { TransactionInterface, UserDetailsData } from "@/interface";
@@ -33,8 +32,6 @@ const DashBoard: React.FC = () => {
   const [stakedArray, setStakedArray] = useState<TransactionInterface[]>([]);
   const [claimRewardAmount, setClaimRewardAmount] = useState<number>(0);
   const [allUserCount ,  setAllUserCount] = useState<number>(0);
-  const [directBonus, setDirectBonus] = useState<number>(0);
-  const [cappingAmount, setCappingAmount] = useState<number>(0);
   const [contractAmount, setContractAmount] = useState<number>(0);
 
   useEffect(()=>{
@@ -56,8 +53,6 @@ const DashBoard: React.FC = () => {
         stakesDataArray,
         claimRewardApiData,
         userCountDataApi,
-        bonusData,
-        cappingAmountData,
         sulAmountData,
       ] = await Promise.all([
         getUserDetailsApi(walletAddress),
@@ -65,8 +60,6 @@ const DashBoard: React.FC = () => {
         userAllStakesApi(token),
         claimRewardAmountApi(walletAddress),
         getAllUserCountWeb2Api(),
-        getDirectBonusApi(walletAddress),
-        getCappingAmountApi(walletAddress),
         getBalanceApi("PFuM9uxKQssQt7qDXXAWddu6dA2K5htL4m"),
       ]);
 
@@ -84,8 +77,6 @@ const DashBoard: React.FC = () => {
 
       setClaimRewardAmount(claimRewardApiData?.data);
       setAllUserCount(userCountDataApi?.data);
-      setDirectBonus(bonusData?.data);
-      setCappingAmount(cappingAmountData?.data);
       setContractAmount(sulAmountData?.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -152,20 +143,7 @@ const DashBoard: React.FC = () => {
          toast.error("Insufficient Sul.");
          throw new Error("Insufficient Sul.");
        }
-       
-      // APPROVAL
-      const approvalRawData = await approvalApi(userStateData?.dataObject?.walletAddress as string, stakeAmount);
-      console.log("approvalRawData", approvalRawData);
-      if (!approvalRawData?.data?.transaction) {
-        toast.error("Approval Failed!");
-        throw new Error("Approval Failed!");
-      }
-
-      const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(approvalRawData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
-        toast.error("Transaction failed!");
-        throw new Error("Transaction failed!");
-      }
+       \
 
       const stakedData = await stakeSulBalanceApi(userStateData?.dataObject?.walletAddress as string, stakeAmount, userStateData?.dataObject?.referredBy as string);
       console.log({stakedData});
@@ -404,19 +382,19 @@ const DashBoard: React.FC = () => {
     {/* Stats Section */}
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* Individual Stats */}
-      {[{ value: userDetails?.depositAmount, text: "Stake Balance", icon: StakeImg },
-        { value: userDetails?.totalROI, text: "Mint Balance", icon: Mint },
-        { value: referralAmount, text: "Referral Earnings", button: "View" }]
-        .map(({ value, text, icon, button }, idx) => (
+      {[{ value: userDetails?.depositAmount, text: "Stake Balance", icon: StakeImg,bgColor:"bg-[#0BF4C8]" },
+        { value: userDetails?.totalROI, text: "Mint Balance", icon: Mint, bgColor:"bg-[#FAD85D]" },
+        { value: referralAmount, text: "Referral Earnings", button: "View", bgColor:"bg-[#F3A9FF]" }]
+        .map(({ value, text, icon, button, bgColor }, idx) => (
           <div
             key={idx}
-            className="bg-gradient-to-b from-[rgba(43,37,90,0.67)] to-[rgba(200,200,200,0.67)] px-6 py-3 rounded-xl flex flex-row justify-between items-center"
+            className={`px-6 py-3 rounded-xl flex flex-row justify-between items-center ${bgColor}`}
           >
             <div className="flex flex-col space-y-0 justify-start">
-              <span className="text-2xl md:text-3xl font-bold text-white">
+              <span className="text-2xl md:text-3xl font-bold text-black">
                 {value}
               </span>
-              <span className="text-xs md:text-base font-medium text-gray-300">{text}</span>
+              <span className="text-xs md:text-base font-medium text-black">{text}</span>
             </div>
             {!button && (
               <Image
@@ -428,7 +406,7 @@ const DashBoard: React.FC = () => {
               />
             )}
             {button && (
-              <Link href="/ReferralEarningTrx" className="text-xs md:text-sm bg-[#D2D2D2] rounded-2xl py-[6px] px-3 md:px-4 font-bold text-black cursor-pointer">
+              <Link href="/ReferralEarningTrx" className="text-xs md:text-sm bg-black rounded-2xl py-[6px] px-3 md:px-4 font-bold text-white cursor-pointer">
                 {button}
               </Link>
             )}
@@ -523,7 +501,7 @@ const DashBoard: React.FC = () => {
       {/* Mint Table */}
       <div className="bg-[#161717] rounded-xl border-gray-400 border-[1px] border-opacity-30 p-4 my-4 w-full overflow-x-auto">
   {/* Header Section */}
-  <div className="bg-[#1C1C1C] rounded-xl text-white flex flex-row items-center justify-between py-2 min-w-[850px] md:min-w-0">
+  <div className="bg-[#272727] rounded-xl text-white flex flex-row items-center justify-between py-2 min-w-[850px] md:min-w-0">
     <p className="font-bold px-8 py-2 w-[20%] text-left">Amount</p>
     <p className="font-bold px-4 py-2 w-[20%] text-center">Maturity Days</p>
     <p className="font-bold px-4 py-2 w-[20%] text-center">Invest Date</p>
@@ -547,14 +525,16 @@ const DashBoard: React.FC = () => {
       {item?.lastMintedAt === "01/01/1970, 05:30:00" ? "First Mint": new Date(item?.lastMintedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
     <div className="lg:w-[20%] px-4 flex justify-end">
       {
-       item.isLoading ? <div className="w-full lg:w-[50%] rounded-xl flex justify-center bg-gradient-to-r from-[rgba(137,34,179,0.7)] via-[rgba(90,100,214,0.7)] to-[rgba(185,77,228,0.7)] ">
+       item.isLoading ? <div className="w-full lg:w-[50%] rounded-xl flex justify-center bg-gradient-to-r from-yellow-300 to-yellow-500 ">
         <Loader />
       </div> : 
       <button
       disabled={item.isUnstaked}
       onClick={(e)=>handleMintFunc(e,index, item?.amount, item?._id, item?.lastMintedAt)}
-      className={`w-full lg:w-[50%] ${item.isUnstaked?"bg-gradient-to-r from-[rgba(137,34,179,0.3)] via-[rgba(90,100,214,0.3)] to-[rgba(185,77,228,0.3)]": "bg-gradient-to-r from-[rgba(137,34,179,0.7)] via-[rgba(90,100,214,0.7)] to-[rgba(185,77,228,0.7)]"} 
-      text-white text-lg font-semibold px-4 py-2 rounded-xl transform hover:scale-105 transition delay-300`}
+      className={`w-full lg:w-[50%] ${item.isUnstaked
+        ? "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"
+        : "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"} 
+        text-black text-lg font-semibold px-4 py-2 rounded-xl transform hover:scale-105 transition delay-300`}
       >
         Mint
       </button>

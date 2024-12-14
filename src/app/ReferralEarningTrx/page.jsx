@@ -43,7 +43,7 @@ const ReferralEarnings = () => {
 
   return (
     <div className="min-h-screen bg-black px-2 md:px-6 py-8">
-      <div className="bg-gradient-to-b from-[rgba(43,37,90,0.34)] to-[rgba(200,200,200,0.09)] px-2 pt-6 md:px-6 rounded-xl">
+      <div className="bg-[#161717] px-2 pt-6 md:px-6 rounded-xl">
         {/* Total Balance */}
         <div className="flex flex-col md:flex-row md:items-center justify-between text-gray-300">
           <p className="text-sm md:text-lg font-bold mb-4">
@@ -63,7 +63,7 @@ const ReferralEarnings = () => {
           ) : referralEarnings?.data?.data ? (
             <table className="w-full text-white text-sm border-separate border-spacing-y-2">
               <thead>
-                <tr className="bg-[#212D49] rounded-md text-xs md:text-base">
+                <tr className="bg-[#272727] rounded-md text-xs md:text-base">
                   <th className="p-3 pl-8 text-left rounded-l-md">Level</th>
                   <th className="p-3 text-center">Total Wallets</th>
                   <th className="p-3 text-center">Total Investments</th>
@@ -86,9 +86,9 @@ const ReferralEarnings = () => {
                         <tr
                           className={`${
                             index % 2 === 0
-                              ? "bg-[#2B255A] bg-opacity-10"
-                              : "bg-[#2B255A] bg-opacity-30"
-                          } rounded-md hover:bg-[#2B255A] transition duration-300`}
+                            ? "bg-transparent"
+                              : "bg-[#24231E]"
+                          } rounded-md hover:bg-[#24231E] transition duration-300`}
                         >
                           <td className="p-3 pl-8 text-xs md:text-sm rounded-l-md">
                             {level}
@@ -115,12 +115,12 @@ const ReferralEarnings = () => {
                           <tr>
                             <td
                               colSpan={4}
-                              className="p-4 bg-[#1A1A2E] rounded-md"
+                              className="p-4 bg-[#1e1f1f] rounded-md"
                             >
                               <div className="overflow-x-auto">
                                 <table className="w-full text-gray-300 text-xs md:text-sm">
                                   <thead>
-                                    <tr className="bg-[#212D49] rounded-md text-base">
+                                    <tr className="bg-[#272727] rounded-md text-base">
                                       <th className="p-2 pl-6 text-left rounded-l-md">
                                         Sr. No
                                       </th>

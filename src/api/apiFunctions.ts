@@ -9,18 +9,18 @@ import { allCountUser, allMintTransactionResponseInterface, BroadcastResponse, c
 
 const FULL_NODE_TRANSACTION_URL = process.env.NEXT_PUBLIC_FULL_NODE_TRANSACTION_URL || "";
 
-// APPROVAL
-export const approvalApi = async(walletAddress:string, amount:string):Promise<stakeBalanceInterface>=>{
-    return postRequest<stakeBalanceInterface>(API_ENDPOINTS.transaction.approval,{walletAddress, amount});
-}
+// // APPROVAL
+// export const approvalApi = async(walletAddress:string, amount:string):Promise<stakeBalanceInterface>=>{
+//     return postRequest<stakeBalanceInterface>(API_ENDPOINTS.transaction.approval,{walletAddress, amount});
+// }
 
-//   GET BALANCE OF USER
-export const getBalanceApi = async (walletAddress:string): Promise<getbalanceInterface> =>{
-    return postRequest<getbalanceInterface>(API_ENDPOINTS.user.getBalance,{walletAddress},"");
-}
+// //   GET BALANCE OF USER
+// export const getBalanceApi = async (walletAddress:string): Promise<getbalanceInterface> =>{
+//     return postRequest<getbalanceInterface>(API_ENDPOINTS.user.getBalance,{walletAddress},"");
+// }
 
-// STAKE SUL BALANCE
-export const stakeSulBalanceApi = async(walletAddress:string, amount:string, referrer:string):Promise<stakeBalanceInterface>=>{
+// STAKE POX BALANCE
+export const stakePoxBalanceApi = async(walletAddress:string, amount:string, referrer:string):Promise<stakeBalanceInterface>=>{
     return postRequest<stakeBalanceInterface>(API_ENDPOINTS.user.stakeBalance,{walletAddress, amount, referrer});
 }
 
@@ -168,6 +168,23 @@ export const getUserIsSR = async (walletAddress: string): Promise<userSRResponse
   } catch (error) {
     console.error("Error in user SR API:", error);
     throw new Error("Failed to get SR details.");
+  }
+};
+
+// GET BALANCE FROM API MAINNET
+export const mainnetBalanceApi = async (walletAddress:string) => {
+  try {
+    const apiResponse = await axios.post(
+      `${FULL_NODE_TRANSACTION_URL}/wallet/getaccount`,
+      {
+        "address": walletAddress,
+        "visible": true
+    }
+    );
+    return apiResponse?.data
+  } catch (error) {
+    console.error("Error broadcasting transaction:", error);
+    throw new Error("Failed to broadcast transaction.");
   }
 };
 

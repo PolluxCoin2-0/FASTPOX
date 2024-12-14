@@ -79,7 +79,7 @@ const Navbar: React.FC = () => {
             alt="sulmine-logo"
             width={0}
             height={0}
-            className="w-[70%] md:w-[60%]"
+            className="w-[70%] md:w-[100%]"
           />
         </Link>
 
@@ -103,8 +103,6 @@ const Navbar: React.FC = () => {
     <span className="relative text-white group-hover:text-black">Sign out</span>
   </span>
 </button>
-
-
         </div>
       </div>
     </nav>
