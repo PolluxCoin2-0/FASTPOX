@@ -5,7 +5,7 @@ import {
  } from "./apiGenericMethods";
 import API_ENDPOINTS from "./apiEndpoints"; // Import the API endpoints
 import axios from "axios";
-import { allCountUser, allMintTransactionResponseInterface, BroadcastResponse, checkUserExistedInterface, getAllStakesResponseInterface, getbalanceInterface, LoginApiResponse, MainnetBalanceResponse, ReferralData, referralRewardInterface, registerInterface, stakeBalanceInterface, stakeUnstakebyIdInterface, Transaction,UpdateStakeResponseInterface,userDetailsInterface, userSRResponse, web2CreateMintInterface } from "@/interface";
+import { allCountUser, allMintTransactionResponseInterface, BroadcastResponse, checkUserExistedInterface, getAllStakesResponseInterface, getbalanceInterface, lastMintTimeResponseFromWeb3, LoginApiResponse, MainnetBalanceResponse, ReferralData, referralRewardInterface, registerInterface, stakeBalanceInterface, stakeLength, stakeUnstakebyIdInterface, Transaction,UpdateStakeResponseInterface,userDetailsInterface, userSRResponse, web2CreateMintInterface } from "@/interface";
 
 const FULL_NODE_TRANSACTION_URL = process.env.NEXT_PUBLIC_FULL_NODE_TRANSACTION_URL || "";
 
@@ -56,7 +56,7 @@ export const getUserDetailsApi = async (walletAddress:string): Promise<userDetai
 
 // CLAIM REWARD
 export const claimRewardApi = async (walletAddress:string): Promise<stakeBalanceInterface> =>{
-  return postRequest<stakeBalanceInterface>(API_ENDPOINTS.user.claimReward,{walletAddress},"");
+  return postRequest<stakeBalanceInterface>(API_ENDPOINTS.user.claimReward,{walletAddress,  "_type":true});
 }
 
 // GET USER REFERRAL REWARD
@@ -187,4 +187,15 @@ export const mainnetBalanceApi = async (walletAddress:string): Promise<MainnetBa
     throw new Error("Failed to broadcast transaction.");
   }
 };
+
+// GET PARTICULAR STAKE LAST MINT TIME
+export const getLastMintTimeFromWeb3 = async (walletAddress: string, stakeIndex:number): Promise<lastMintTimeResponseFromWeb3> => {
+  return postRequest<lastMintTimeResponseFromWeb3>(API_ENDPOINTS.user.getUserStakes,{walletAddress, stakeIndex});
+}
+
+// GET STAKE LENGTH FROM WEB3
+export const getTotalStakeLengthFromWeb3 = async (walletAddress: string,): Promise<stakeLength> => {
+  return postRequest<stakeLength>(API_ENDPOINTS.user.getStakeLength,{walletAddress,});
+}
+
 

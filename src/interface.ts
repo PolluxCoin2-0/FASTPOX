@@ -274,6 +274,22 @@ interface MainnetBalanceResponse {
   balance?: number;
 }
 
+interface lastMintTimeResponseFromWeb3 {
+  data :{
+    amount: number,
+    startTime: string,
+    lastMintedAt: string,
+    mintCount: number,
+    maturityDuration: number,
+    beforeMaturityDuration: number,
+    isUnstaked:boolean,
+  }
+}
+
+interface stakeLength {
+  data :number;
+}
+
 export type {
   LoginApiResponse,
   getbalanceInterface,
@@ -299,5 +315,7 @@ export type {
   stakeUnstakebyIdInterface,
   ReferralData,
   userSRResponse,
-  MainnetBalanceResponse
+  MainnetBalanceResponse,
+  lastMintTimeResponseFromWeb3,
+  stakeLength,
 };

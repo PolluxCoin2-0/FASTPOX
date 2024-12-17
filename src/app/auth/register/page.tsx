@@ -154,10 +154,14 @@ const RegistrationPage: React.FC = () => {
 
         // SIGN TRANSACTION
         const stakedSignBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(stakeBalanceApiData?.data?.transaction, userStateData?.isUserSR);
-        if (stakedSignBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
+        if (
+          !stakedSignBroadcastTransactionStatusFuncRes.transactionStatus || 
+          stakedSignBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT"
+        ) {
           toast.error("Transaction failed!");
           throw new Error("Transaction failed!");
         }
+        
 
       // Call the API to register the user with the wallet address and referral address
         const registerApiResponseData = await registerApi(

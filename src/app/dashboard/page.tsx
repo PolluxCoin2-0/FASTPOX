@@ -7,7 +7,7 @@ import Mint from "@/assests/Mint.svg";
 import MintedTransactions from "./MintedTransactions";
 import ShimmerEffect from "@/app/components/ShimmerEffect";
 import {claimRewardAmountApi, claimRewardApi, 
-createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getUserDetailsApi, mintUserApi, referralRewardApi, 
+createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getTotalStakeLengthFromWeb3,  getUserDetailsApi, mintUserApi, referralRewardApi, 
 stakePoxBalanceApi, 
 updateStakeByIdWeb2Api, userAllStakesApi } from "@/api/apiFunctions";
 import { useSelector } from "react-redux";
@@ -18,6 +18,7 @@ import Loader from "../components/Loader";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SignBroadcastTransactionStatus } from "@/lib/signBroadcastTransactionStatus";
+import FetchTime from "./FetchTime";
 
 const DashBoard: React.FC = () => {
   const router = useRouter();
@@ -34,6 +35,7 @@ const DashBoard: React.FC = () => {
   const [claimRewardAmount, setClaimRewardAmount] = useState<number>(0);
   const [allUserCount ,  setAllUserCount] = useState<number>(0);
   const [contractAmount, setContractAmount] = useState<number>(0);
+  const [totalStakeLengthFromWeb3, setTotalStakeLengthFromWeb3] = useState<number>(0);
 
   useEffect(()=>{
     if(userStateData?.isLogin){
@@ -55,6 +57,7 @@ const DashBoard: React.FC = () => {
         claimRewardApiData,
         userCountDataApi,
         sulAmountData,
+        totalStakeLengthFromWeb3Data
       ] = await Promise.all([
         getUserDetailsApi(walletAddress),
         referralRewardApi(walletAddress),
@@ -62,6 +65,7 @@ const DashBoard: React.FC = () => {
         claimRewardAmountApi(walletAddress),
         getAllUserCountWeb2Api(),
         getBalanceApi(),
+        getTotalStakeLengthFromWeb3(walletAddress)
       ]);
 
       setUserDetails(userDetailsApiData?.data);
@@ -78,12 +82,15 @@ const DashBoard: React.FC = () => {
       setClaimRewardAmount(claimRewardApiData?.data);
       setAllUserCount(userCountDataApi?.data);
       setContractAmount(sulAmountData?.data);
+      setTotalStakeLengthFromWeb3(totalStakeLengthFromWeb3Data?.data)
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally{
       setComponentLoading(false);
     }
   }
+
+  console.log({stakedArray})
 
   if(!userStateData?.isLogin){
    router.push("/");
@@ -150,10 +157,14 @@ const DashBoard: React.FC = () => {
       }
 
       const stakeSignBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(stakedData?.data?.transaction, userStateData?.isUserSR);
-      if (stakeSignBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
+      if (
+        !stakeSignBroadcastTransactionStatusFuncRes.transactionStatus || 
+        stakeSignBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT"
+      ) {
         toast.error("Transaction failed!");
         throw new Error("Transaction failed!");
       }
+      
 
        // CREATE STAKE TRANSACTION WEB2 API
        const web2CreateStakeApiData = await createStakeTransactionWeb2Api(
@@ -206,10 +217,14 @@ const DashBoard: React.FC = () => {
 
       // SIGN TRANSACTION
       const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(claimRewardData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
+      if (
+        !signBroadcastTransactionStatusFuncRes.transactionStatus || 
+        signBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT"
+      ) {
         toast.error("Transaction failed!");
         throw new Error("Transaction failed!");
       }
+      
 
         // CREATE WEB2 CLAIM API
         const claimRewardWeb2ApiData = await createClaimRewardWeb2Api(
@@ -270,10 +285,13 @@ const DashBoard: React.FC = () => {
       
       // SIGN TRANSACTION
       const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(mintData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
+      if (
+        !signBroadcastTransactionStatusFuncRes.transactionStatus || 
+        signBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT"
+      ) {
         toast.error("Transaction failed!");
         throw new Error("Transaction failed!");
-      }
+      }      
 
        // WEB2 CREATE MINT API CALLING FUNCTIONS
        const web2MintApiData = await createMintWeb2Api(
@@ -416,7 +434,7 @@ const DashBoard: React.FC = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Stake Token Section */}
       <div className="border border-black bg-[#161717] rounded-xl px-6 md:px-8 py-8 md:py-10 flex flex-col justify-between">
-        <p className="text-white font-bold text-2xl md:text-3xl">STAKE TOKEN</p>
+        <p className="text-white font-bold text-2xl md:text-3xl">DEPOSIT TOKEN</p>
         <div className="grid grid-cols-[70%,26%] gap-4 my-8 pb-10 border-b border-gray-400 border-opacity-30">
           <div className="rounded-xl border border-gray-400 border-opacity-30 bg-[#1C1C1C] px-5 md:px-5 py-5">
           <input
@@ -448,7 +466,7 @@ const DashBoard: React.FC = () => {
         background: "linear-gradient(90deg, #FFEE71 23%, #FFF8A8 44.5%, #F9DA6C 71%, #FFF8A8 94.5%)",
       }}
     >
-      STAKE
+    DEPOSIT
     </button>    
         }
       </div>
@@ -507,47 +525,23 @@ const DashBoard: React.FC = () => {
     <p className="font-bold px-8 py-2 w-[20%] text-right">Mint Reward</p>
   </div>
 
-  {/* Data Row Section */}
+  {/* Data Rows */}
   {
-    stakedArray.length>0 ? stakedArray.map ((item, index)=>{
+    Array.from({ length: totalStakeLengthFromWeb3 }, (_, index) => {
       return (
-        <>{
-          
-       <Link href={`https://poxscan.io/transactions-detail/${item?.trxId}`} 
-       className={`${item.isUnstaked?"text-gray-500" : "text-white"} flex flex-row items-center justify-between pt-4 min-w-[850px] md:min-w-0 pb-2 border-b border-gray-400 border-opacity-30 last:border-0`}
-        key={item?._id}>
-    <p className="px-8 py-2 w-[20%] text-left">{item?.amount}</p>
-    <p className="px-4 py-2 w-[20%] text-center">{item?.mintCount} / 1000</p>
-    <p className="px-4 py-2 w-[20%] text-left lg:text-center">{new Date(item?.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
-    <p className="px-0 lg:px-4 py-2 w-[20%] text-left lg:text-center">
-      {item?.lastMintedAt === "01/01/1970, 05:30:00" ? "First Mint": new Date(item?.lastMintedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
-    <div className="lg:w-[20%] px-4 flex justify-end">
-      {
-       item.isLoading ? <div className="w-full lg:w-[50%] rounded-xl flex justify-center bg-gradient-to-r from-yellow-300 to-yellow-500 ">
-        <Loader />
-      </div> : 
-      <button
-      disabled={item.isUnstaked}
-      onClick={(e)=>handleMintFunc(e,index, item?.amount, item?._id,
-        //  item?.lastMintedAt
-        )}
-      className={`w-full lg:w-[50%] ${item.isUnstaked
-        ? "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"
-        : "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"} 
-        text-black text-lg font-semibold px-4 py-2 rounded-xl transform hover:scale-105 transition delay-300`}
-      >
-        Mint
-      </button>
-        }
-    </div>
-  </Link>
-      }
-        </>
-      )
-    }) : 
-    <p className="text-white font-bold text-xl pl-4 pt-4">No Stakes Found !</p>
+     <>
+          <FetchTime
+            userStateData={userStateData}
+            index={index}
+            buttonClick={handleMintFunc}
+          />
+          </>
+      );
+    })
   }
 </div>
+
+
       {/* Transaction Table */}
       <p className="font-bold text-white text-3xl mt-8 mb-4 pl-2 ">Transactions</p>
      <MintedTransactions  />
