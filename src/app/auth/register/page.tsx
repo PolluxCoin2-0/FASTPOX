@@ -24,7 +24,7 @@ import { SignBroadcastTransactionStatus } from "@/lib/signBroadcastTransactionSt
 import Image from "next/image";
 
 const RegistrationPage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+  // const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
   const [walletLoading, setWalletLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userWalletAddress, setUserWalletAddress] = useState<string>("");
@@ -42,9 +42,9 @@ const RegistrationPage: React.FC = () => {
     }
   }, [referralAddress]);
 
-  const handleCloseModal = (): void => {
-    setIsModalOpen(false);
-  };
+  // const handleCloseModal = (): void => {
+  //   setIsModalOpen(false);
+  // };
 
   const handleWalletAddress = async (): Promise<void> => {
     if (walletLoading) {
@@ -224,7 +224,7 @@ const RegistrationPage: React.FC = () => {
       }}
     >
       {/* Modal */}
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <div className="fixed inset-0 z-20 flex items-center justify-center bg-white/10 px-2">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <div className="flex space-x-1 items-center justify-center">
@@ -262,7 +262,7 @@ const RegistrationPage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Moving Balls */}
       <div className="absolute inset-0 z-10">
@@ -286,7 +286,9 @@ const RegistrationPage: React.FC = () => {
 </div>
 
       {/* Registration Card (Only visible if modal is closed) */}
-      {!isModalOpen && (
+      {
+      // !isModalOpen && 
+      (
         <div className="bg-[#2e3030] backdrop-blur-lg border border-white/30 shadow-2xl rounded-3xl p-5 md:p-8 w-full max-w-md lg:max-w-lg xl:max-w-xl transform z-10">
           <h1 className="text-2xl md:text-3xl font-extrabold text-center text-white mb-4 md:mb-6 tracking-wide">
             FASTPOX REGISTRATION
