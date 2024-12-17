@@ -4,7 +4,7 @@ const API_ENDPOINTS = {
       register: "/signUp",
     },
     user: {
-      getBalance: "/getBalanceOf",
+      getBalance: "/getContractBalance",
       stakeBalance: "/stakePox",
       getUserDetails : "/getUser",
       claimReward : "/claimReward",

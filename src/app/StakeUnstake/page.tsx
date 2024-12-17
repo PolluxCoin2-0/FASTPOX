@@ -59,8 +59,8 @@ const StakeUnstakePage: React.FC = () => {
 
     try {
       // CHECK MINT COUNT IS GREATER THAN OR EQUAL TO 10
-      if(mintCount!==1000){
-        toast.error("Mint count should be greater than or equal to 1000.");
+      if (mintCount < 200) {
+        toast.error("Unstake count should be at least 200.");
         return;
       }
 
@@ -80,7 +80,7 @@ const StakeUnstakePage: React.FC = () => {
 
     // SIGN TRANSACTION
     const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(unstakeApiData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
+      if (signBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
         toast.error("Transaction failed!");
         throw new Error("Transaction failed!");
       }

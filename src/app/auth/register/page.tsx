@@ -129,12 +129,13 @@ const RegistrationPage: React.FC = () => {
       // USER MUST HAVE A MINIMUM POX AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
       const poxAmountOfUser = await mainnetBalanceApi(userWalletAddress);
       console.log("poxAmountOfUser", poxAmountOfUser?.balance);
-      if (poxAmountOfUser?.balance/Math.pow(10,6) === 0) {
+      const userBalance = (poxAmountOfUser?.balance || 0) / Math.pow(10, 6);
+      if (userBalance === 0) {
         toast.error(" Insufficient Pox.");
         throw new Error("Insufficient Pox.");
       }
 
-      if (poxAmountOfUser?.balance/Math.pow(10,6) < parseInt(poxAmount)) {
+      if (userBalance < parseInt(poxAmount)) {
         toast.error("Insufficient Pox.");
         throw new Error("Insufficient Pox.");
       }
@@ -153,7 +154,7 @@ const RegistrationPage: React.FC = () => {
 
         // SIGN TRANSACTION
         const stakedSignBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(stakeBalanceApiData?.data?.transaction, userStateData?.isUserSR);
-        if (stakedSignBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
+        if (stakedSignBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
           toast.error("Transaction failed!");
           throw new Error("Transaction failed!");
         }

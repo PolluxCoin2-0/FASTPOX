@@ -146,7 +146,7 @@ interface web2CreateMintInterface {
     trxId: string;
     walletAddress: string;
     amount: number;
-    status: string; // Example: "success"
+    status: string | null; // Example: "success"
     isDeleted: boolean;
     _id: string;
     createdAt: string; // ISO date string
@@ -270,6 +270,10 @@ interface userSRResponse {
    data: string;
 }
 
+interface MainnetBalanceResponse {
+  balance?: number;
+}
+
 export type {
   LoginApiResponse,
   getbalanceInterface,
@@ -294,5 +298,6 @@ export type {
   allCountUser,
   stakeUnstakebyIdInterface,
   ReferralData,
-  userSRResponse
+  userSRResponse,
+  MainnetBalanceResponse
 };

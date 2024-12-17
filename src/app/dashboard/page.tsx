@@ -7,7 +7,7 @@ import Mint from "@/assests/Mint.svg";
 import MintedTransactions from "./MintedTransactions";
 import ShimmerEffect from "@/app/components/ShimmerEffect";
 import {claimRewardAmountApi, claimRewardApi, 
-createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getUserDetailsApi, mintUserApi, referralRewardApi, 
+createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getUserDetailsApi, mintUserApi, referralRewardApi, 
 stakePoxBalanceApi, 
 updateStakeByIdWeb2Api, userAllStakesApi } from "@/api/apiFunctions";
 import { useSelector } from "react-redux";
@@ -54,14 +54,14 @@ const DashBoard: React.FC = () => {
         stakesDataArray,
         claimRewardApiData,
         userCountDataApi,
-        // sulAmountData,
+        sulAmountData,
       ] = await Promise.all([
         getUserDetailsApi(walletAddress),
         referralRewardApi(walletAddress),
         userAllStakesApi(token),
         claimRewardAmountApi(walletAddress),
         getAllUserCountWeb2Api(),
-        // getBalanceApi("PFuM9uxKQssQt7qDXXAWddu6dA2K5htL4m"),
+        getBalanceApi(),
       ]);
 
       setUserDetails(userDetailsApiData?.data);
@@ -77,7 +77,7 @@ const DashBoard: React.FC = () => {
 
       setClaimRewardAmount(claimRewardApiData?.data);
       setAllUserCount(userCountDataApi?.data);
-      // setContractAmount(sulAmountData?.data);
+      setContractAmount(sulAmountData?.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally{
@@ -130,19 +130,18 @@ const DashBoard: React.FC = () => {
       }
 
        // USER MUST HAVE A MINIMUM SUL AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
-      //  const sulAmountOfUser = await getBalanceApi(userStateData?.dataObject?.walletAddress as string);
-      //  console.log("sulAmountOfUser", sulAmountOfUser);
-      //  if (sulAmountOfUser?.data === 0) {
-      //    toast.error(" Insufficient Sul.");
-      //    throw new Error("Insufficient Sul.");
-      //  }
+       const sulAmountOfUser = await getBalanceApi();
+       console.log("sulAmountOfUser", sulAmountOfUser);
+       if (sulAmountOfUser?.data === 0) {
+         toast.error(" Insufficient Sul.");
+         throw new Error("Insufficient Sul.");
+       }
  
-      //  if (sulAmountOfUser?.data < parseInt(stakeAmount)) {
-      //    toast.error("Insufficient Sul.");
-      //    throw new Error("Insufficient Sul.");
-      //  }
+       if (sulAmountOfUser?.data < parseInt(stakeAmount)) {
+         toast.error("Insufficient Sul.");
+         throw new Error("Insufficient Sul.");
+       }
        
-
       const stakedData = await stakePoxBalanceApi(userStateData?.dataObject?.walletAddress as string, stakeAmount, userStateData?.dataObject?.referredBy as string);
       console.log({stakedData});
       if (!stakedData?.data?.transaction) {
@@ -151,7 +150,7 @@ const DashBoard: React.FC = () => {
       }
 
       const stakeSignBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(stakedData?.data?.transaction, userStateData?.isUserSR);
-      if (stakeSignBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
+      if (stakeSignBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
         toast.error("Transaction failed!");
         throw new Error("Transaction failed!");
       }
@@ -207,7 +206,7 @@ const DashBoard: React.FC = () => {
 
       // SIGN TRANSACTION
       const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(claimRewardData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
+      if (signBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
         toast.error("Transaction failed!");
         throw new Error("Transaction failed!");
       }
@@ -269,7 +268,7 @@ const DashBoard: React.FC = () => {
       
       // SIGN TRANSACTION
       const signBroadcastTransactionStatusFuncRes = await SignBroadcastTransactionStatus(mintData?.data?.transaction, userStateData?.isUserSR);
-      if (signBroadcastTransactionStatusFuncRes.transactionStatus !== "SUCCESS") {
+      if (signBroadcastTransactionStatusFuncRes.transactionStatus === "REVERT") {
         toast.error("Transaction failed!");
         throw new Error("Transaction failed!");
       }

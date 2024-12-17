@@ -50,7 +50,7 @@ const MintedTransactions: React.FC = () => {
           <p className="block xl:hidden px-8 py-2 w-[50%] text-left">{`${transaction?.trxId.slice(0,10)}...${transaction?.trxId.slice(-10)}`}</p>
           <p className="hidden xl:block px-8 py-2 w-[50%] text-left">{transaction?.trxId}</p>
           <p className="px-4 py-2 w-[25%] text-center">{new Date(transaction?.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
-          <p className="px-8 py-2 w-[25%] text-right">{transaction?.amount/1000}</p>
+          <p className="px-8 py-2 w-[25%] text-right">{(transaction?.amount*15)/(100*30)}</p>
         </Link>
       ))
     :

@@ -5,7 +5,7 @@ import {
  } from "./apiGenericMethods";
 import API_ENDPOINTS from "./apiEndpoints"; // Import the API endpoints
 import axios from "axios";
-import { allCountUser, allMintTransactionResponseInterface, BroadcastResponse, checkUserExistedInterface, getAllStakesResponseInterface, getbalanceInterface, LoginApiResponse, ReferralData, referralRewardInterface, registerInterface, stakeBalanceInterface, stakeUnstakebyIdInterface, Transaction,UpdateStakeResponseInterface,userDetailsInterface, userSRResponse, web2CreateMintInterface } from "@/interface";
+import { allCountUser, allMintTransactionResponseInterface, BroadcastResponse, checkUserExistedInterface, getAllStakesResponseInterface, getbalanceInterface, LoginApiResponse, MainnetBalanceResponse, ReferralData, referralRewardInterface, registerInterface, stakeBalanceInterface, stakeUnstakebyIdInterface, Transaction,UpdateStakeResponseInterface,userDetailsInterface, userSRResponse, web2CreateMintInterface } from "@/interface";
 
 const FULL_NODE_TRANSACTION_URL = process.env.NEXT_PUBLIC_FULL_NODE_TRANSACTION_URL || "";
 
@@ -14,14 +14,14 @@ const FULL_NODE_TRANSACTION_URL = process.env.NEXT_PUBLIC_FULL_NODE_TRANSACTION_
 //     return postRequest<stakeBalanceInterface>(API_ENDPOINTS.transaction.approval,{walletAddress, amount});
 // }
 
-// //   GET BALANCE OF USER
-// export const getBalanceApi = async (walletAddress:string): Promise<getbalanceInterface> =>{
-//     return postRequest<getbalanceInterface>(API_ENDPOINTS.user.getBalance,{walletAddress},"");
-// }
+//   GET BALANCE OF USER
+export const getBalanceApi = async (): Promise<getbalanceInterface> =>{
+    return postRequest<getbalanceInterface>(API_ENDPOINTS.user.getBalance,{"_isPox":true});
+}
 
 // STAKE POX BALANCE
 export const stakePoxBalanceApi = async(walletAddress:string, amount:string, referrer:string):Promise<stakeBalanceInterface>=>{
-    return postRequest<stakeBalanceInterface>(API_ENDPOINTS.user.stakeBalance,{walletAddress, amount, referrer});
+    return postRequest<stakeBalanceInterface>(API_ENDPOINTS.user.stakeBalance,{walletAddress, amount, referrer, "_type":true});
 }
 
 // REGISTER
@@ -80,12 +80,12 @@ export const checkUserExistedApi = async (walletAddress:string, referredBy:strin
 }
 
 // WEB2 CREATE MINT API
-export const createMintWeb2Api = async (walletAddress:string,trxId:string, amount:number, status:string, token:string): Promise<web2CreateMintInterface> =>{
+export const createMintWeb2Api = async (walletAddress:string,trxId:string, amount:number, status:string | null, token:string): Promise<web2CreateMintInterface> =>{
   return postRequest<web2CreateMintInterface>(API_ENDPOINTS.web2.createMint,{walletAddress, trxId, amount, status},token);
 }
 
 // WEB2 CREATE CLAIM REWARD API
-export const createClaimRewardWeb2Api = async (walletAddress:string,trxId:string, amount:number, status:string, token:string): Promise<web2CreateMintInterface> =>{
+export const createClaimRewardWeb2Api = async (walletAddress:string,trxId:string, amount:number, status:string | null, token:string): Promise<web2CreateMintInterface> =>{
   return postRequest<web2CreateMintInterface>(API_ENDPOINTS.web2.createClaim,{walletAddress, trxId, amount, status},token);
 }
 
@@ -100,7 +100,7 @@ export const allMintTransactionWeb2Api = async (token:string, pageNumber:number)
 }
 
 // WEB2 CREATE STAKE TRANSACTION API
-export const createStakeTransactionWeb2Api = async (walletAddress:string,trxId:string, amount:number, status:string, userId:string): Promise<web2CreateMintInterface> =>{
+export const createStakeTransactionWeb2Api = async (walletAddress:string,trxId:string, amount:number, status:string|null, userId:string): Promise<web2CreateMintInterface> =>{
   return postRequest<web2CreateMintInterface>(`${API_ENDPOINTS.web2.createStake}/${userId}`,{walletAddress, trxId, amount, status},);
 }
 
@@ -172,9 +172,9 @@ export const getUserIsSR = async (walletAddress: string): Promise<userSRResponse
 };
 
 // GET BALANCE FROM API MAINNET
-export const mainnetBalanceApi = async (walletAddress:string) => {
+export const mainnetBalanceApi = async (walletAddress:string): Promise<MainnetBalanceResponse> => {
   try {
-    const apiResponse = await axios.post(
+    const apiResponse = await axios.post<MainnetBalanceResponse>(
       `${FULL_NODE_TRANSACTION_URL}/wallet/getaccount`,
       {
         "address": walletAddress,
