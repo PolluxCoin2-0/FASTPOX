@@ -93,19 +93,19 @@ const DashBoard: React.FC = () => {
     return <ShimmerEffect />;
   }
 
-  function is24HoursCompleted(lastTime: string): boolean {
-    const currentTime: Date = new Date(); // Get the current date and time
-    const lastTimeDate: Date = new Date(lastTime); // Convert the given time to a Date object
+//   function is24HoursCompleted(lastTime: string): boolean {
+//     const currentTime: Date = new Date(); // Get the current date and time
+//     const lastTimeDate: Date = new Date(lastTime); // Convert the given time to a Date object
 
-    // Calculate the difference in milliseconds
-    const timeDifference: number = currentTime.getTime() - lastTimeDate.getTime();
+//     // Calculate the difference in milliseconds
+//     const timeDifference: number = currentTime.getTime() - lastTimeDate.getTime();
 
-    // Convert milliseconds to hours
-    const hoursDifference: number = timeDifference / (1000 * 60 * 60);
+//     // Convert milliseconds to hours
+//     const hoursDifference: number = timeDifference / (1000 * 60 * 60);
 
-    // Check if 24 hours have passed
-    return hoursDifference >= 24;
-}
+//     // Check if 24 hours have passed
+//     return hoursDifference >= 24;
+// }
 
   // STAKE FUNC
   const handleStakeFunc =async (e: React.MouseEvent<HTMLButtonElement> ): Promise<void> => {
@@ -234,7 +234,9 @@ const DashBoard: React.FC = () => {
   }
 
   // MINT FUNC
-  const handleMintFunc = async (e: React.MouseEvent<HTMLButtonElement>, index:number, amount:number, userID:string, lastMintedTime:string ): Promise<void> => {
+  const handleMintFunc = async (e: React.MouseEvent<HTMLButtonElement>, index:number, amount:number, userID:string,
+    //  lastMintedTime:string 
+    ): Promise<void> => {
     e.preventDefault();
     if(isMintLoading){
       toast.warning("Minting in progress");
@@ -245,11 +247,11 @@ const DashBoard: React.FC = () => {
     try {
 
       // 24 Hours completed or not
-      const isLastMintedTime = is24HoursCompleted(lastMintedTime);
-      if(!isLastMintedTime){
-        toast.error("24 hours must pass before minting again.");
-        throw new Error("24 hours must pass before minting again.");
-      }
+      // const isLastMintedTime = is24HoursCompleted(lastMintedTime);
+      // if(!isLastMintedTime){
+      //   toast.error("24 hours must pass before minting again.");
+      //   throw new Error("24 hours must pass before minting again.");
+      // }
 
        // Update the loading state for the specific item
     setStakedArray((prevState) => {
@@ -526,7 +528,9 @@ const DashBoard: React.FC = () => {
       </div> : 
       <button
       disabled={item.isUnstaked}
-      onClick={(e)=>handleMintFunc(e,index, item?.amount, item?._id, item?.lastMintedAt)}
+      onClick={(e)=>handleMintFunc(e,index, item?.amount, item?._id,
+        //  item?.lastMintedAt
+        )}
       className={`w-full lg:w-[50%] ${item.isUnstaked
         ? "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"
         : "bg-[linear-gradient(90deg,_#FFEE71_23%,_#FFF8A8_44.5%,_#F9DA6C_71%,_#FFF8A8_94.5%)]"} 
