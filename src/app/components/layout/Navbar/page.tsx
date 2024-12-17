@@ -86,13 +86,13 @@ const Navbar: React.FC = () => {
         <div className="flex items-center space-x-2 md:space-x-5">
 
           {/* Connect Wallet Button */}
-          <Link
+          {/* <Link
             href="/StakeUnstake"
             className="whitespace-nowrap  bg-gradient-to-r from-yellow-300 to-yellow-500 text-sm md:text-base text-black font-semibold px-3 md:px-6 py-2 rounded-lg shadow-lg 
         hover:scale-105 transition-transform"
           >
           Unstake
-          </Link>
+          </Link> */}
 
           <button
   onClick={handleSignOut}
