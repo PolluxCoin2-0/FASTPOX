@@ -117,14 +117,14 @@ const RegistrationPage: React.FC = () => {
      }
 
       //  CHECK USER HAVE 1000 POX IS STAKED OR NOT
-      const isStakeSufficient = await checkStakeBalance(userWalletAddress);
-      if (isStakeSufficient) {
-        toast.success("Stake amount is sufficient.");
-      } else {
-        toast.error("Stake amount is insufficient");
-        setIsLoading(false);
-        throw new Error("Stake amount is insufficient.");
-      }
+      // const isStakeSufficient = await checkStakeBalance(userWalletAddress);
+      // if (isStakeSufficient) {
+      //   toast.success("Stake amount is sufficient.");
+      // } else {
+      //   toast.error("Stake amount is insufficient");
+      //   setIsLoading(false);
+      //   throw new Error("Stake amount is insufficient.");
+      // }
 
       // USER MUST HAVE A MINIMUM POX AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
       const poxAmountOfUser = await mainnetBalanceApi(userWalletAddress);
