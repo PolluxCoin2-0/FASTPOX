@@ -15,7 +15,7 @@ import {
   registerApi,
   stakePoxBalanceApi,
 } from "@/api/apiFunctions";
-import { checkStakeBalance } from "@/lib/checkStakeBalance";
+// import { checkStakeBalance } from "@/lib/checkStakeBalance";
 import Loader from "@/app/components/Loader";
 import { useRouter, useSearchParams  } from "next/navigation";
 import { useSelector } from "react-redux";
