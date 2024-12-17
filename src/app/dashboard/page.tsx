@@ -8,6 +8,7 @@ import MintedTransactions from "./MintedTransactions";
 import ShimmerEffect from "@/app/components/ShimmerEffect";
 import {claimRewardAmountApi, claimRewardApi, 
 createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getUserDetailsApi, mintUserApi, referralRewardApi, 
+stakePoxBalanceApi, 
 updateStakeByIdWeb2Api, userAllStakesApi } from "@/api/apiFunctions";
 import { useSelector } from "react-redux";
 import { TransactionInterface, UserDetailsData } from "@/interface";
@@ -53,17 +54,16 @@ const DashBoard: React.FC = () => {
         stakesDataArray,
         claimRewardApiData,
         userCountDataApi,
-        sulAmountData,
+        // sulAmountData,
       ] = await Promise.all([
         getUserDetailsApi(walletAddress),
         referralRewardApi(walletAddress),
         userAllStakesApi(token),
         claimRewardAmountApi(walletAddress),
         getAllUserCountWeb2Api(),
-        getBalanceApi("PFuM9uxKQssQt7qDXXAWddu6dA2K5htL4m"),
+        // getBalanceApi("PFuM9uxKQssQt7qDXXAWddu6dA2K5htL4m"),
       ]);
 
-      // Update states as data is received
       setUserDetails(userDetailsApiData?.data);
       setReferralAmount(referralRewardAPiData?.data);
 
@@ -77,7 +77,7 @@ const DashBoard: React.FC = () => {
 
       setClaimRewardAmount(claimRewardApiData?.data);
       setAllUserCount(userCountDataApi?.data);
-      setContractAmount(sulAmountData?.data);
+      // setContractAmount(sulAmountData?.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally{
@@ -85,8 +85,6 @@ const DashBoard: React.FC = () => {
     }
   }
 
-  console.log({stakedArray})
-  
   if(!userStateData?.isLogin){
    router.push("/");
   }
@@ -132,20 +130,20 @@ const DashBoard: React.FC = () => {
       }
 
        // USER MUST HAVE A MINIMUM SUL AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
-       const sulAmountOfUser = await getBalanceApi(userStateData?.dataObject?.walletAddress as string);
-       console.log("sulAmountOfUser", sulAmountOfUser);
-       if (sulAmountOfUser?.data === 0) {
-         toast.error(" Insufficient Sul.");
-         throw new Error("Insufficient Sul.");
-       }
+      //  const sulAmountOfUser = await getBalanceApi(userStateData?.dataObject?.walletAddress as string);
+      //  console.log("sulAmountOfUser", sulAmountOfUser);
+      //  if (sulAmountOfUser?.data === 0) {
+      //    toast.error(" Insufficient Sul.");
+      //    throw new Error("Insufficient Sul.");
+      //  }
  
-       if (sulAmountOfUser?.data < parseInt(stakeAmount)) {
-         toast.error("Insufficient Sul.");
-         throw new Error("Insufficient Sul.");
-       }
-       \
+      //  if (sulAmountOfUser?.data < parseInt(stakeAmount)) {
+      //    toast.error("Insufficient Sul.");
+      //    throw new Error("Insufficient Sul.");
+      //  }
+       
 
-      const stakedData = await stakeSulBalanceApi(userStateData?.dataObject?.walletAddress as string, stakeAmount, userStateData?.dataObject?.referredBy as string);
+      const stakedData = await stakePoxBalanceApi(userStateData?.dataObject?.walletAddress as string, stakeAmount, userStateData?.dataObject?.referredBy as string);
       console.log({stakedData});
       if (!stakedData?.data?.transaction) {
         toast.error("Staked Failed!");
@@ -313,7 +311,6 @@ const DashBoard: React.FC = () => {
       setIsMintLoading(false);
     }
   }
-
 
   const handleReferralLinkCopy = () => {
     if (userStateData?.dataObject?.walletAddress) {

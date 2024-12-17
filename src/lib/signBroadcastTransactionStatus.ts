@@ -5,7 +5,7 @@ import { checkTransactionStatus } from "@/lib/CheckTransactionStatus";
 
 interface TransactionResponse {
   txid: string;
-  transactionStatus: string;
+  transactionStatus: string | null;
 }
 
 export const SignBroadcastTransactionStatus = async (rawData: object, isUserSr:boolean): Promise<TransactionResponse> => {
@@ -42,11 +42,6 @@ export const SignBroadcastTransactionStatus = async (rawData: object, isUserSr:b
     // CHECK TRANSACTION STATUS
     const transactionStatus = await checkTransactionStatus(broadcast.txid);
     console.log({ transactionStatus });
-
-    if (transactionStatus !== "SUCCESS") {
-      toast.error("Transaction failed!");
-      throw new Error("Transaction failed!");
-    }
 
     return {
       txid: broadcast.txid,

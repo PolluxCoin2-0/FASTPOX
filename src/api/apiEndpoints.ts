@@ -5,7 +5,7 @@ const API_ENDPOINTS = {
     },
     user: {
       getBalance: "/getBalanceOf",
-      stakeBalance: "/stakeSulaana",
+      stakeBalance: "/stakePox",
       getUserDetails : "/getUser",
       claimReward : "/claimReward",
       getReferralRewards : "/getUserReferralRewards",
