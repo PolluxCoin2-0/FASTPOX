@@ -19,9 +19,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "FASTPOX",
+  title: "FastPOX - The Power of POX Mining and Rewards",
   description:
-    "SULMINE is a mining platform built on PolluxChain, designed for seamless staking and earning rewards with Sulaana (SUL) tokens. Tap, stake, and mine to unlock your potential with next-gen blockchain technology.",
+  "FastPOX is a dynamic mining and earning platform built on PolluxChain. By staking POX tokens, users unlock mining rewards, Earn up to 300% through mining income, tap into 10 levels of referral income, and accelerate your earnings by building your network. Join the future of decentralized mining today."
 };
 
 export default function RootLayout({
