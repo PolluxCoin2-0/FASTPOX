@@ -130,8 +130,8 @@ const DashBoard: React.FC = () => {
         return;
       }
 
-      if(parseInt(stakeAmount)<100){
-        toast.error("Sul amount should be greater than or equal to 100.");
+      if(parseInt(stakeAmount)<10){
+        toast.error("Sul amount should be greater than or equal to 10.");
         setIsStakeLoading(false);
         return;
       }

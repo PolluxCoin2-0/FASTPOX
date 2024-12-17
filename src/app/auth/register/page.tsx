@@ -91,8 +91,8 @@ const RegistrationPage: React.FC = () => {
         return;
       }
 
-      if(parseInt(poxAmount)<1000){
-        toast.error("POX amount should be greater than or equal to 1000.");
+      if(parseInt(poxAmount)<10){
+        toast.error("POX amount should be greater than or equal to 10.");
         setIsLoading(false);
         return;
       }
@@ -116,7 +116,7 @@ const RegistrationPage: React.FC = () => {
       throw new Error("Invalid Referral Code!");
      }
 
-      //  CHECK USER HAVE 1000 POX IS STAKED OR NOT
+      //  CHECK USER HAVE 10 POX IS STAKED OR NOT
       // const isStakeSufficient = await checkStakeBalance(userWalletAddress);
       // if (isStakeSufficient) {
       //   toast.success("Stake amount is sufficient.");
