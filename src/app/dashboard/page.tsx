@@ -392,7 +392,7 @@ const DashBoard: React.FC = () => {
         <p className="text-white font-bold text-base truncate">
        Capping :
         </p>
-        <p className="text-white font-bold text-base">{(cappingAmount).toFixed(6)}</p>
+        <p className="text-white font-bold text-base">{(cappingAmount).toFixed(6)}/ {userDetails?.depositAmount&&userDetails?.depositAmount*3}</p>
       </div>
 
       {/* TOTAL USER */}
