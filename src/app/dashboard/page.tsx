@@ -7,7 +7,7 @@ import Mint from "@/assests/Mint.svg";
 import MintedTransactions from "./MintedTransactions";
 import ShimmerEffect from "@/app/components/ShimmerEffect";
 import {claimRewardAmountApi, claimRewardApi, 
-createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getTotalStakeLengthFromWeb3,  getUserDetailsApi, mintUserApi, referralRewardApi, 
+createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getLastMintTimeFromWeb3,  getTotalStakeLengthFromWeb3,  getUserDetailsApi, mainnetBalanceApi, mintUserApi, referralRewardApi, 
 stakePoxBalanceApi, 
 updateStakeByIdWeb2Api, userAllStakesApi } from "@/api/apiFunctions";
 import { useSelector } from "react-redux";
@@ -100,19 +100,19 @@ const DashBoard: React.FC = () => {
     return <ShimmerEffect />;
   }
 
-//   function is24HoursCompleted(lastTime: string): boolean {
-//     const currentTime: Date = new Date(); // Get the current date and time
-//     const lastTimeDate: Date = new Date(lastTime); // Convert the given time to a Date object
+  function is24HoursCompleted(lastTime: string): boolean {
+    const currentTime: Date = new Date(); // Get the current date and time
+    const lastTimeDate: Date = new Date(lastTime); // Convert the given time to a Date object
 
-//     // Calculate the difference in milliseconds
-//     const timeDifference: number = currentTime.getTime() - lastTimeDate.getTime();
+    // Calculate the difference in milliseconds
+    const timeDifference: number = currentTime.getTime() - lastTimeDate.getTime();
 
-//     // Convert milliseconds to hours
-//     const hoursDifference: number = timeDifference / (1000 * 60 * 60);
+    // Convert milliseconds to hours
+    const hoursDifference: number = timeDifference / (1000 * 60 * 60);
 
-//     // Check if 24 hours have passed
-//     return hoursDifference >= 24;
-// }
+    // Check if 24 hours have passed
+    return hoursDifference >= 24;
+}
 
   // STAKE FUNC
   const handleStakeFunc =async (e: React.MouseEvent<HTMLButtonElement> ): Promise<void> => {
@@ -137,14 +137,14 @@ const DashBoard: React.FC = () => {
       }
 
        // USER MUST HAVE A MINIMUM SUL AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
-       const sulAmountOfUser = await getBalanceApi();
-       console.log("sulAmountOfUser", sulAmountOfUser);
-       if (sulAmountOfUser?.data === 0) {
+    const poxAmountOfUser = await mainnetBalanceApi(userStateData?.dataObject?.walletAddress as string);
+      const userBalance = (poxAmountOfUser?.balance || 0) / Math.pow(10, 6);
+       if (userBalance === 0) {
          toast.error(" Insufficient Sul.");
          throw new Error("Insufficient Sul.");
        }
  
-       if (sulAmountOfUser?.data < parseInt(stakeAmount)) {
+       if (userBalance < parseInt(stakeAmount)) {
          toast.error("Insufficient Sul.");
          throw new Error("Insufficient Sul.");
        }
@@ -202,7 +202,7 @@ const DashBoard: React.FC = () => {
     setIsClaimLoading(true);
     try {
 
-      if(claimRewardAmount<=0){
+      if(claimRewardAmount<1){
         toast.error("Insufficient Amount!");
         throw new Error("Insufficient Amount!");
       }
@@ -249,9 +249,7 @@ const DashBoard: React.FC = () => {
   }
 
   // MINT FUNC
-  const handleMintFunc = async (e: React.MouseEvent<HTMLButtonElement>, index:number, amount:number, userID:string,
-    //  lastMintedTime:string 
-    ): Promise<void> => {
+  const handleMintFunc = async (e: React.MouseEvent<HTMLButtonElement>, index:number, amount:number): Promise<void> => {
     e.preventDefault();
     if(isMintLoading){
       toast.warning("Minting in progress");
@@ -261,12 +259,13 @@ const DashBoard: React.FC = () => {
     setIsMintLoading(true);
     try {
 
+      const lastMintedTimeFromWeb3 = await getLastMintTimeFromWeb3(userStateData?.dataObject?.walletAddress as string, index);
       // 24 Hours completed or not
-      // const isLastMintedTime = is24HoursCompleted(lastMintedTime);
-      // if(!isLastMintedTime){
-      //   toast.error("24 hours must pass before minting again.");
-      //   throw new Error("24 hours must pass before minting again.");
-      // }
+      const isLastMintedTime = is24HoursCompleted(lastMintedTimeFromWeb3?.data?.lastMintedAt);
+      if(!isLastMintedTime){
+        toast.error("24 hours must pass before minting again.");
+        throw new Error("24 hours must pass before minting again.");
+      }
 
        // Update the loading state for the specific item
     setStakedArray((prevState) => {
@@ -307,12 +306,12 @@ const DashBoard: React.FC = () => {
         }
 
      // UPDATE WEB2 MINT DATA
-     const web2updateStakeDataApi = await updateStakeByIdWeb2Api(userID);
-     console.log({web2updateStakeDataApi});
+    //  const web2updateStakeDataApi = await updateStakeByIdWeb2Api(userID);
+    //  console.log({web2updateStakeDataApi});
 
-     if(web2updateStakeDataApi?.statusCode!==200){
-      throw new Error("Web2 Update Stake APi Failed transaction");
-    }
+    //  if(web2updateStakeDataApi?.statusCode!==200){
+    //   throw new Error("Web2 Update Stake APi Failed transaction");
+    // }
 
       await fetchData();
       toast.success("Mint successfully");
