@@ -45,6 +45,7 @@ const MintedTransactions: React.FC = () => {
       {mintTrxDataArray && mintTrxDataArray?.transactions?.length >0 ? mintTrxDataArray.transactions.map((transaction, index) => (
         <Link href={`https://poxscan.io/transactions-detail/${transaction?.trxId}`}
           key={index}
+          target="_blank"
           className="text-white flex flex-row items-center justify-between pt-4 pb-2 border-b border-gray-400 border-opacity-30 last:border-0 min-w-[850px] md:min-w-0"
         >
           <p className="block xl:hidden px-8 py-2 w-[50%] text-left">{`${transaction?.trxId.slice(0,10)}...${transaction?.trxId.slice(-10)}`}</p>
