@@ -390,7 +390,7 @@ const DashBoard: React.FC = () => {
          py-[18px] px-4 lg:px-8 rounded-xl flex justify-between items-center"
       >
         <p className="text-white font-bold text-base truncate">
-       Capping :
+       Current Cap / Capping :
         </p>
         <p className="text-white font-bold text-base">{(cappingAmount).toFixed(6)}/ {userDetails?.depositAmount&&userDetails?.depositAmount*3}</p>
       </div>
