@@ -45,6 +45,9 @@ const FetchTime = ({ userStateData, index, buttonClick }) => {
       <p className="px-4 py-2 w-[20%] text-left lg:text-center">
         {mintTime?.data?.startTime}
       </p>
+      <p className="px-4 py-2 w-[20%] text-left lg:text-center">
+        {mintTime?.data?.cappingRewards}
+      </p>
       <p className="px-0 lg:px-4 py-2 w-[20%] text-left lg:text-center">
         {mintTime?.data?.lastMintedAt}
       </p>

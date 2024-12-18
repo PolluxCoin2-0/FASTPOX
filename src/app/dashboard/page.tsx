@@ -68,7 +68,7 @@ const DashBoard: React.FC = () => {
         getBalanceApi(),
         getTotalStakeLengthFromWeb3(walletAddress)
       ]);
-
+      console.log({key:userDetailsApiData?.data})
       setUserDetails(userDetailsApiData?.data);
       setReferralAmount(referralRewardAPiData?.data);
 
@@ -349,7 +349,7 @@ const DashBoard: React.FC = () => {
   return (
     <div className="min-h-screen bg-black px-2 md:px-4 py-7">
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Referral Link Section */}
       <div
         className="bg-[#333333]
@@ -379,13 +379,24 @@ const DashBoard: React.FC = () => {
         </svg>
       </div>
 
+      {/* Capping*/}
+      <div
+        className="bg-[#333333]
+         py-[18px] px-4 lg:px-8 rounded-xl flex justify-between items-center"
+      >
+        <p className="text-white font-bold text-base truncate">
+       Capping :
+        </p>
+        <p className="text-white font-bold text-base">{}</p>
+      </div>
+
       {/* TOTAL USER */}
       <div
         className="bg-[#333333]
          py-[18px] px-4 lg:px-8 rounded-xl flex justify-between items-center"
       >
         <p className="text-white font-bold text-base truncate">
-        Total Users / Total Staked :
+        Total Users / Total Investment :
         </p>
         <p className="text-white font-bold text-base">{allUserCount} / {contractAmount}</p>
       </div>
@@ -398,7 +409,7 @@ const DashBoard: React.FC = () => {
     {/* Stats Section */}
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* Individual Stats */}
-      {[{ value: userDetails?.depositAmount, text: "Stake Balance", icon: StakeImg,bgColor:"bg-[#0BF4C8]" },
+      {[{ value: userDetails?.depositAmount, text: "Investment Amount", icon: StakeImg,bgColor:"bg-[#0BF4C8]" },
         { value: userDetails?.totalROI, text: "Mint Balance", icon: Mint, bgColor:"bg-[#FAD85D]" },
         { value: referralAmount, text: "Referral Earnings", button: "View", bgColor:"bg-[#F3A9FF]" }]
         .map(({ value, text, icon, button, bgColor }, idx) => (
@@ -521,6 +532,7 @@ const DashBoard: React.FC = () => {
     <p className="font-bold px-8 py-2 w-[20%] text-left">Amount</p>
     <p className="font-bold px-4 py-2 w-[20%] text-center">Maturity Days</p>
     <p className="font-bold px-4 py-2 w-[20%] text-center">Invest Date</p>
+    <p className="font-bold px-4 py-2 w-[20%] text-center">Capping</p>
     <p className="font-bold px-4 py-2 w-[20%] text-center">Last Mint</p>
     <p className="font-bold px-8 py-2 w-[20%] text-right">Mint Reward</p>
   </div>
