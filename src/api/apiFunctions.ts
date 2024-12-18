@@ -198,4 +198,9 @@ export const getTotalStakeLengthFromWeb3 = async (walletAddress: string,): Promi
   return postRequest<stakeLength>(API_ENDPOINTS.user.getStakeLength,{walletAddress,});
 }
 
+// GET Capping FROM WEB3
+export const getCappingFromWeb3 = async (walletAddress: string,): Promise<stakeLength> => {
+  return postRequest<stakeLength>(API_ENDPOINTS.user.getCapping,{walletAddress,});
+}
+
 

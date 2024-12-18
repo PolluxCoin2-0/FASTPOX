@@ -7,7 +7,7 @@ import Mint from "@/assests/Mint.svg";
 import MintedTransactions from "./MintedTransactions";
 import ShimmerEffect from "@/app/components/ShimmerEffect";
 import {claimRewardAmountApi, claimRewardApi, 
-createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getLastMintTimeFromWeb3,  getTotalStakeLengthFromWeb3,  getUserDetailsApi, mainnetBalanceApi, mintUserApi, referralRewardApi, 
+createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getCappingFromWeb3,  getLastMintTimeFromWeb3,  getTotalStakeLengthFromWeb3,  getUserDetailsApi, mainnetBalanceApi, mintUserApi, referralRewardApi, 
 stakePoxBalanceApi, 
 // updateStakeByIdWeb2Api, 
 userAllStakesApi } from "@/api/apiFunctions";
@@ -37,6 +37,7 @@ const DashBoard: React.FC = () => {
   const [allUserCount ,  setAllUserCount] = useState<number>(0);
   const [contractAmount, setContractAmount] = useState<number>(0);
   const [totalStakeLengthFromWeb3, setTotalStakeLengthFromWeb3] = useState<number>(0);
+  const [cappingAmount, setCappingAmount] = useState<number>(0);
 
   useEffect(()=>{
     if(userStateData?.isLogin){
@@ -58,7 +59,8 @@ const DashBoard: React.FC = () => {
         claimRewardApiData,
         userCountDataApi,
         sulAmountData,
-        totalStakeLengthFromWeb3Data
+        totalStakeLengthFromWeb3Data,
+        cappingAmountData
       ] = await Promise.all([
         getUserDetailsApi(walletAddress),
         referralRewardApi(walletAddress),
@@ -66,7 +68,8 @@ const DashBoard: React.FC = () => {
         claimRewardAmountApi(walletAddress),
         getAllUserCountWeb2Api(),
         getBalanceApi(),
-        getTotalStakeLengthFromWeb3(walletAddress)
+        getTotalStakeLengthFromWeb3(walletAddress),
+        getCappingFromWeb3(walletAddress)
       ]);
       console.log({key:userDetailsApiData?.data})
       setUserDetails(userDetailsApiData?.data);
@@ -84,6 +87,8 @@ const DashBoard: React.FC = () => {
       setAllUserCount(userCountDataApi?.data);
       setContractAmount(sulAmountData?.data);
       setTotalStakeLengthFromWeb3(totalStakeLengthFromWeb3Data?.data)
+      console.log("cap", cappingAmountData?.data)
+      setCappingAmount(cappingAmountData?.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally{
@@ -349,7 +354,7 @@ const DashBoard: React.FC = () => {
   return (
     <div className="min-h-screen bg-black px-2 md:px-4 py-7">
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Referral Link Section */}
       <div
         className="bg-[#333333]
@@ -377,6 +382,17 @@ const DashBoard: React.FC = () => {
             d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
           />
         </svg>
+      </div>
+
+      {/* Capping*/}
+      <div
+        className="bg-[#333333]
+         py-[18px] px-4 lg:px-8 rounded-xl flex justify-between items-center"
+      >
+        <p className="text-white font-bold text-base truncate">
+       Capping :
+        </p>
+        <p className="text-white font-bold text-base">{(cappingAmount).toFixed(6)}</p>
       </div>
 
       {/* TOTAL USER */}
@@ -521,7 +537,7 @@ const DashBoard: React.FC = () => {
     <p className="font-bold px-8 py-2 w-[20%] text-left">Amount</p>
     <p className="font-bold px-4 py-2 w-[20%] text-center">Maturity Days</p>
     <p className="font-bold px-4 py-2 w-[20%] text-center">Invest Date</p>
-    <p className="font-bold px-4 py-2 w-[20%] text-center">Capping</p>
+    {/* <p className="font-bold px-4 py-2 w-[20%] text-center">Capping</p> */}
     <p className="font-bold px-4 py-2 w-[20%] text-center">Last Mint</p>
     <p className="font-bold px-8 py-2 w-[20%] text-right">Mint Reward</p>
   </div>
