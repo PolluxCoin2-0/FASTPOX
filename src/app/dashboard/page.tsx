@@ -137,22 +137,22 @@ const DashBoard: React.FC = () => {
       }
 
       if(parseInt(stakeAmount)<10){
-        toast.error("Sul amount should be greater than or equal to 10.");
+        toast.error("POX amount should be greater than or equal to 10.");
         setIsStakeLoading(false);
         return;
       }
 
-       // USER MUST HAVE A MINIMUM SUL AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
+       // USER MUST HAVE A MINIMUM POX AMOUNT IN THEIR WALLET EQUAL TO OR GREATER THAN THE ENTERED AMOUNT
     const poxAmountOfUser = await mainnetBalanceApi(userStateData?.dataObject?.walletAddress as string);
       const userBalance = (poxAmountOfUser?.balance || 0) / Math.pow(10, 6);
        if (userBalance === 0) {
-         toast.error(" Insufficient Sul.");
-         throw new Error("Insufficient Sul.");
+         toast.error(" Insufficient POX.");
+         throw new Error("Insufficient POX.");
        }
  
        if (userBalance < parseInt(stakeAmount)) {
-         toast.error("Insufficient Sul.");
-         throw new Error("Insufficient Sul.");
+         toast.error("Insufficient POX.");
+         throw new Error("Insufficient POX.");
        }
        
       const stakedData = await stakePoxBalanceApi(userStateData?.dataObject?.walletAddress as string, stakeAmount, userStateData?.dataObject?.referredBy as string);
@@ -464,7 +464,7 @@ const DashBoard: React.FC = () => {
            />
           </div>
           <div className="flex flex-col items-center justify-center bg-[#1C1C1C] rounded-xl border border-gray-400 border-opacity-30">
-            <Image src={PoxGreenLogo} alt="sul-image" height={0} width={0} className="w-[20%] md:w-[20%] pt-1" priority />
+            <Image src={PoxGreenLogo} alt="pox-image" height={0} width={0} className="w-[20%] md:w-[20%] pt-1" priority />
             <p className="text-white font-medium text-sm md:text-base pt-1">POX</p>
           </div>
         </div>
@@ -504,7 +504,7 @@ const DashBoard: React.FC = () => {
             <p className="text-[#DFDFDF] text-sm opacity-70">Reward</p>
           </div>
           <div className="flex flex-col items-center justify-center bg-sul-background rounded-xl border border-gray-400 border-opacity-30">
-            <Image src={PoxGreenLogo} alt="sul-image" height={0} width={0} className="w-[20%] md:w-[20%] pt-1" priority />
+            <Image src={PoxGreenLogo} alt="pox-image" height={0} width={0} className="w-[20%] md:w-[20%] pt-1" priority />
             <p className="text-white font-medium text-sm md:text-base pt-1">POX</p>
           </div>
         </div>

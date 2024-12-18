@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
         <Link href="/dashboard" className="text-white font-bold text-lg">
           <Image
             src={Logo}
-            alt="sulmine-logo"
+            alt="fastpox-logo"
             width={0}
             height={0}
             className="w-[70%] md:w-[100%]"
