@@ -9,7 +9,8 @@ import ShimmerEffect from "@/app/components/ShimmerEffect";
 import {claimRewardAmountApi, claimRewardApi, 
 createClaimRewardWeb2Api, createMintWeb2Api, createStakeTransactionWeb2Api, getAllUserCountWeb2Api,  getBalanceApi,  getLastMintTimeFromWeb3,  getTotalStakeLengthFromWeb3,  getUserDetailsApi, mainnetBalanceApi, mintUserApi, referralRewardApi, 
 stakePoxBalanceApi, 
-updateStakeByIdWeb2Api, userAllStakesApi } from "@/api/apiFunctions";
+// updateStakeByIdWeb2Api, 
+userAllStakesApi } from "@/api/apiFunctions";
 import { useSelector } from "react-redux";
 import { TransactionInterface, UserDetailsData } from "@/interface";
 import { RootState } from "@/redux/store";
