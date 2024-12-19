@@ -108,7 +108,14 @@ const DashBoard: React.FC = () => {
 
   function is24HoursCompleted(lastTime: string): boolean {
     const currentTime: Date = new Date(); // Get the current date and time
-    const lastTimeDate: Date = new Date(lastTime); // Convert the given time to a Date object
+
+    // Parse the date string in DD/MM/YYYY, HH:mm:ss format
+    const [datePart, timePart] = lastTime.split(", ");
+    const [day, month, year] = datePart.split("/").map(Number);
+    const [hours, minutes, seconds] = timePart.split(":").map(Number);
+
+    // Create a valid Date object
+    const lastTimeDate: Date = new Date(year, month - 1, day, hours, minutes, seconds);
 
     // Calculate the difference in milliseconds
     const timeDifference: number = currentTime.getTime() - lastTimeDate.getTime();
