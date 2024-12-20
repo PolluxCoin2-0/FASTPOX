@@ -344,19 +344,54 @@ const DashBoard: React.FC = () => {
   }
 
   const handleReferralLinkCopy = () => {
-    if (userStateData?.dataObject?.walletAddress) {
-      navigator.clipboard.writeText(`https://fastpox.com/referral/${userStateData?.dataObject?.walletAddress}`)
-        .then(() => {
-          toast.success("Referral link copied to clipboard");
-        })
-        .catch((error) => {
-          toast.error("Failed to copy referral link");
-          console.error(error);
-        });
+    const walletAddress = userStateData?.dataObject?.walletAddress;
+  
+    if (walletAddress) {
+      const referralLink = `https://fastpox.com/referral/${walletAddress}`;
+  
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(referralLink)
+          .then(() => {
+            toast.success("Referral link copied to clipboard");
+          })
+          .catch((error) => {
+            fallbackCopyTextToClipboard(referralLink);
+            console.error("Failed to copy using clipboard API, using fallback", error);
+          });
+      } else {
+        // Fallback for older browsers or mobile Chrome
+        fallbackCopyTextToClipboard(referralLink);
+      }
     } else {
       toast.error("Wallet address is not available");
     }
   };
+  
+  const fallbackCopyTextToClipboard = (text:string) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed"; // Prevent scrolling to the bottom of the page
+    textArea.style.opacity = "0"; // Hide the textarea
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+  
+    try {
+      const successful = document.execCommand("copy");
+      if (successful) {
+        toast.success("Referral link copied to clipboard");
+      } else {
+        toast.error("Failed to copy referral link");
+      }
+    } catch (error) {
+      toast.error("Failed to copy referral link");
+      console.error("Fallback copy failed", error);
+    }
+  
+    document.body.removeChild(textArea);
+  };
+  
 
   return (
     <div className="min-h-screen bg-black px-2 md:px-4 py-7">
